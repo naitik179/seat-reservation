@@ -32,8 +32,9 @@ public class ReservationService {
     private final UserShowRepository userShowRepository;
     private final IdempotencyKeyRepository idempotencyKeyRepository;
     private final RequestHashService requestHashService;
+    private final MeterRegistry meterRegistry;
 
-    public ReservationService(ShowRepository showRepository, SeatRepository seatRepository, ReservationRepository reservationRepository, ReservationSeatRepository reservationSeatRepository, UserShowRepository userShowRepository, IdempotencyKeyRepository idempotencyKeyRepository, RequestHashService requestHashService) {
+    public ReservationService(ShowRepository showRepository, SeatRepository seatRepository, ReservationRepository reservationRepository, ReservationSeatRepository reservationSeatRepository, UserShowRepository userShowRepository, IdempotencyKeyRepository idempotencyKeyRepository, RequestHashService requestHashService, MeterRegistry meterRegistry) {
         this.showRepository = showRepository;
         this.seatRepository = seatRepository;
         this.reservationRepository = reservationRepository;
@@ -41,6 +42,7 @@ public class ReservationService {
         this.userShowRepository = userShowRepository;
         this.idempotencyKeyRepository = idempotencyKeyRepository;
         this.requestHashService = requestHashService;
+        this.meterRegistry = meterRegistry;
     }
 
     @Transactional
@@ -80,6 +82,7 @@ public class ReservationService {
          */
         if (idempotencyKey.getReservationId() != null) {
 
+            meterRegistry.counter( "reservations_declined_total", "reason", "idempotent_replay" ) .increment();
             Reservation existingReservation = reservationRepository.findById(idempotencyKey.getReservationId()).orElseThrow(() -> new IllegalStateException("Reservation referenced by idempotency key does not exist"));
 
             return toResponse(existingReservation);
@@ -113,6 +116,7 @@ public class ReservationService {
          */
         if (userShow.getSeatCount() + seats.size() > DEFAULT_PER_USER_LIMIT) {
 
+            meterRegistry.counter( "reservations_declined_total", "reason", "per_user_limit" ) .increment();
             throw new UserLimitException();
         }
 
@@ -142,6 +146,7 @@ public class ReservationService {
         List<String> unavailableSeats = lockedSeats.stream().filter(seat -> seat.getStatus() != SeatStatus.AVAILABLE).map(Seat::getSeatNumber).toList();
 
         if (!unavailableSeats.isEmpty()) {
+            meterRegistry.counter( "reservations_declined_total", "reason", "seat_taken" ) .increment();
             throw new SeatTakenException(unavailableSeats);
         }
 
@@ -190,6 +195,12 @@ public class ReservationService {
         idempotencyKey.setReservationId(reservation.getId());
 
         idempotencyKey.setResponseStatus(201);
+
+        /*
+        * Step 17:
+        * Record successful reservation.
+        */
+        meterRegistry .counter("reservations_confirmed_total") .increment();
 
         return toResponse(reservation);
     }
