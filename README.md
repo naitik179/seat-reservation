@@ -227,6 +227,8 @@ For the full stress test:
 --requests 20000 `
 --workers 500``
 
+<img width="863" height="557" alt="image" src="https://github.com/user-attachments/assets/07c6a153-5b26-41b6-94de-e4b6504500ad" />
+
 # Database Migrations
 
 Flyway manages the database schema.
@@ -273,3 +275,5 @@ For a production system, the following could be added:
 * More extensive integration and testing
 
 These are deliberately outside the minimum correctness boundary of this assignment.
+
+
