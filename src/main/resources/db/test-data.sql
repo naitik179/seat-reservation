@@ -1,0 +1,100 @@
+INSERT INTO shows (
+    id,
+    name,
+    price_paise,
+    per_user_limit,
+    created_at
+)
+VALUES (
+    '550e8400-e29b-41d4-a716-446655440000',
+    'Paytm Test Show',
+    50000,
+    4,
+    CURRENT_TIMESTAMP
+)
+ON CONFLICT (id) DO NOTHING;
+
+
+-- ============================================================
+-- Seats A1 - A10
+-- ============================================================
+
+INSERT INTO seats (
+    id,
+    show_id,
+    seat_number,
+    status,
+    created_at
+)
+VALUES
+(
+    '00000000-0000-0000-0000-000000000001',
+    '550e8400-e29b-41d4-a716-446655440000',
+    'A1',
+    'AVAILABLE',
+    CURRENT_TIMESTAMP
+),
+(
+    '00000000-0000-0000-0000-000000000002',
+    '550e8400-e29b-41d4-a716-446655440000',
+    'A2',
+    'AVAILABLE',
+    CURRENT_TIMESTAMP
+),
+(
+    '00000000-0000-0000-0000-000000000003',
+    '550e8400-e29b-41d4-a716-446655440000',
+    'A3',
+    'AVAILABLE',
+    CURRENT_TIMESTAMP
+),
+(
+    '00000000-0000-0000-0000-000000000004',
+    '550e8400-e29b-41d4-a716-446655440000',
+    'A4',
+    'AVAILABLE',
+    CURRENT_TIMESTAMP
+),
+(
+    '00000000-0000-0000-0000-000000000005',
+    '550e8400-e29b-41d4-a716-446655440000',
+    'A5',
+    'AVAILABLE',
+    CURRENT_TIMESTAMP
+),
+(
+    '00000000-0000-0000-0000-000000000006',
+    '550e8400-e29b-41d4-a716-446655440000',
+    'A6',
+    'AVAILABLE',
+    CURRENT_TIMESTAMP
+),
+(
+    '00000000-0000-0000-0000-000000000007',
+    '550e8400-e29b-41d4-a716-446655440000',
+    'A7',
+    'AVAILABLE',
+    CURRENT_TIMESTAMP
+),
+(
+    '00000000-0000-0000-0000-000000000008',
+    '550e8400-e29b-41d4-a716-446655440000',
+    'A8',
+    'AVAILABLE',
+    CURRENT_TIMESTAMP
+),
+(
+    '00000000-0000-0000-0000-000000000009',
+    '550e8400-e29b-41d4-a716-446655440000',
+    'A9',
+    'AVAILABLE',
+    CURRENT_TIMESTAMP
+),
+(
+    '00000000-0000-0000-0000-000000000010',
+    '550e8400-e29b-41d4-a716-446655440000',
+    'A10',
+    'AVAILABLE',
+    CURRENT_TIMESTAMP
+)
+ON CONFLICT (id) DO NOTHING;
