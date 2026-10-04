@@ -31,4 +31,12 @@ public class ReservationController {
 
         return ResponseEntity.created(URI.create("/reservations/" + response.reservationId())).body(response);
     }
+
+    @DeleteMapping("/reservations/{reservationId}")
+    public ResponseEntity<Void> cancelReservation(@PathVariable UUID reservationId, Authentication authentication) {
+
+        reservationService.cancelReservation(reservationId, authentication.getName());
+
+        return ResponseEntity.noContent().build();
+    }
 }

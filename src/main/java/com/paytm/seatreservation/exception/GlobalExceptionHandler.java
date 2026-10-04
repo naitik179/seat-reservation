@@ -65,6 +65,47 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(ShowNotFoundException.class)
+    public ResponseEntity<?> handleShowNotFound(
+            ShowNotFoundException exception,
+            HttpServletRequest request) {
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(Map.of(
+                        "timestamp", Instant.now(),
+                        "status", 404,
+                        "code", "SHOW_NOT_FOUND",
+                        "message", exception.getMessage()
+                ));
+    }
+
+    @ExceptionHandler(ReservationNotFoundException.class)
+    public ResponseEntity<?> handleReservationNotFound(
+            ReservationNotFoundException exception,
+            HttpServletRequest request) {
+
+        return buildErrorResponse(
+                HttpStatus.NOT_FOUND,
+                "RESERVATION_NOT_FOUND",
+                exception.getMessage(),
+                request
+        );
+    }
+
+    @ExceptionHandler(ReservationCancelledException.class)
+    public ResponseEntity<?> handleReservationCancelled(
+            ReservationCancelledException exception,
+            HttpServletRequest request) {
+
+        return buildErrorResponse(
+                HttpStatus.CONFLICT,
+                "RESERVATION_ALREADY_CANCELLED",
+                exception.getMessage(),
+                request
+        );
+    }
+
     private ResponseEntity<Map<String, Object>> buildErrorResponse(
             HttpStatus status,
             String code,

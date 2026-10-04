@@ -30,10 +30,23 @@ public interface SeatRepository extends JpaRepository<Seat, UUID> {
     @Query("""
         SELECT s
         FROM Seat s
-        WHERE s.show.id = :showId
+        WHERE s.showId = :showId
         ORDER BY s.seatNumber
         """)
     List<Seat> findByShowIdOrderBySeatNumber(UUID showId);
+
+    @Query(value = """
+        SELECT *
+        FROM seats
+        WHERE id IN (
+            SELECT seat_id
+            FROM reservation_seats
+            WHERE reservation_id = :reservationId
+        )
+        ORDER BY seat_number
+        FOR UPDATE
+        """, nativeQuery = true)
+    List<Seat> lockSeatsForReservation(UUID reservationId);
 
 
 }
