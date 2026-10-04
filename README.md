@@ -64,9 +64,7 @@ Therefore:
 
 ## Concurrency Test
 
-A Python burst-test script is included under:
-
-`scripts/burst_test.py`
+A Python burst-test script is included under: `burst_test.py`
 
 The hot-seat test sends many concurrent requests for the same seat.
 
@@ -201,30 +199,35 @@ Health
 
 ## Test Data
 
-A deterministic test show is available through:
-
-scripts/test-data.sql
+A deterministic test show is available through: test-data.sql
 
 It creates show: 550e8400-e29b-41d4-a716-446655440000
 
 Reset Test Show
-Get-Content .\scripts\reset_show.sql |
+Get-Content reset_show.sql |
 docker compose exec -T postgres psql -U reservation -d seat_reservation
+
 Burst Test
-``python .\scripts\burst_test.py `
---show-id 550e8400-e29b-41d4-a716-446655440000 `
---seat A1 `
---requests 500 `
---workers 100``
+## Parameters
+
+| Parameter   | Required | Default               | Description                                      |
+|-------------|----------|-----------------------|--------------------------------------------------|
+| `--base-url` | No       | `http://localhost:8080` | Application base URL                             |
+| `--show-id`  | Yes      | —                     | UUID of the show to test                         |
+| `--seat`     | No       | `A1`                  | Seat on which all requests will compete          |
+| `--requests` | No       | `500`                 | Total number of concurrent reservation requests  |
+| `--workers`  | No       | `100`                 | Maximum Python worker threads                    |
+
 
 For the full stress test:
 
-``python .\scripts\burst_test.py `
+``python burst_test.py `
 --show-id 550e8400-e29b-41d4-a716-446655440000 `
 --seat A1 `
 --requests 20000 `
---workers 500
-Database Migrations``
+--workers 500``
+
+# Database Migrations
 
 Flyway manages the database schema.
 
@@ -263,12 +266,10 @@ For a production system, the following could be added:
 * JWT/OAuth2 authentication
 * Rate limiting
 * API gateway
-* Distributed tracing
-* Centralized log aggregation
 * Managed PostgreSQL with replicas/backups
 * Connection-pool and database capacity tuning
 * Alerting
 * Automated deployment
-* More extensive integration and chaos testing
+* More extensive integration and testing
 
 These are deliberately outside the minimum correctness boundary of this assignment.
